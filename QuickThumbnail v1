@@ -1,0 +1,25 @@
+import bpy
+import os
+
+save_dir = '/path/to/directory'
+
+def render_collection(collection, save_path):
+    for coll in bpy.context.view_layer.layer_collection.children:
+        coll.exclude = True
+
+    for coll in bpy.context.view_layer.layer_collection.children:
+        if coll.name == collection.name:
+            coll.exclude = False
+            break
+
+    bpy.context.scene.render.filepath = save_path
+    bpy.ops.render.render(write_still=True)
+
+    coll.exclude = True
+
+for collection in bpy.data.collections:
+    file_name = "{}.png".format(collection.name)  # Set the file format here
+    save_path = os.path.join(save_dir, file_name)
+    render_collection(collection, save_path)
+
+print("Render complete")
